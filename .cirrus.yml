@@ -1,0 +1,69 @@
+#
+#  Copyright Christopher Di Bella
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+task:
+  container:
+    image: cjdb/clang-concepts:disco
+    cpu: 8
+    memory: 8
+  env:
+    PROJECT_NAME: lingua
+    ENABLE_CLANG_TIDY: Off
+    SANITIZE_RELEASE: Off
+    matrix:
+      - BUILD_TYPE: Debug
+      - BUILD_TYPE: Release
+    matrix:
+      - CODE_COVERAGE: gcov
+        REQUIRED_SANITIZERS: Address;Undefined
+        OPTIONAL_SANITIZERS: ;
+        CLANG_TIDY_PATH: ;
+        matrix:
+          - PROFILE: gcc-9
+
+  clang_format_script:
+    - export PATH="/opt/clang-concepts/bin:$PATH"
+    - bash config/scripts/clang-format.sh
+
+  conan_config_install_script:
+    - export CONAN_USER_HOME="${CIRRUS_WORKING_DIR}"
+    - conan config install config/conan
+
+  conan_install_script:
+    - export CONAN_USER_HOME="${CIRRUS_WORKING_DIR}"
+    - mkdir -p build-${BUILD_TYPE}
+    - cd build-${BUILD_TYPE}
+    - conan install ..
+         --build
+         --profile=${PROFILE}
+         --settings build_type=${BUILD_TYPE}
+         --options code_coverage=${CODE_COVERAGE}
+         --options required_sanitizers=${REQUIRED_SANITIZERS}
+         --options optional_sanitizers=${OPTIONAL_SANITIZERS}
+         --options sanitize_release=${SANITIZE_RELEASE}
+         --options enable_clang_tidy=${ENABLE_CLANG_TIDY}
+         --options clang_tidy_path=${CLANG_TIDY_PATH}
+  conan_build_configure_script:
+    - export CONAN_USER_HOME="${CIRRUS_WORKING_DIR}"
+    - cd build-${BUILD_TYPE}
+    - conan build .. --configure
+  build_script:
+    - export CONAN_USER_HOME="${CIRRUS_WORKING_DIR}"
+    - cd build-${BUILD_TYPE}
+    - ninja -v
+  test_script:
+    - export CONAN_USER_HOME="${CIRRUS_WORKING_DIR}"
+    - cd build-${BUILD_TYPE}
+    - conan build .. --test

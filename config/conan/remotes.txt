@@ -1,0 +1,5 @@
+cjdb https://api.bintray.com/conan/cjdb/cjdb
+conan-community https://api.bintray.com/conan/conan-community/conan
+expected https://api.bintray.com/conan/cjdb/expected
+public-conan https://api.bintray.com/conan/bincrafters/public-conan
+range-v3 https://api.bintray.com/conan/cjdb/range-v3
