@@ -13,3 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+lingua_add_test(
+   FILENAME source_coordinate.cpp
+   COMPILER_DEFINITIONS
+      DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+   LIBRARIES
+      cjdb
+      doctest::doctest
+      fmt::fmt)
+
+lingua_add_test(
+   FILENAME source_coordinate_range.cpp
+   COMPILER_DEFINITIONS
+      DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+   LIBRARIES
+      cjdb
+      doctest::doctest
+      fmt::fmt
+      range-v3)
