@@ -13,4 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-add_subdirectory(lexer)
+lingua_add_test(
+   FILENAME unknown_escape.cpp
+   INCLUDE "${CMAKE_SOURCE_DIR}/test/include"
+   COMPILER_DEFINITIONS
+      DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+   LIBRARIES
+      cjdb
+      doctest::doctest
+      fmt::fmt
+      range-v3
+      source.lexer.is_escape)

@@ -32,3 +32,6 @@ lingua_add_test(
       doctest::doctest
       fmt::fmt
       range-v3)
+
+add_subdirectory(diagnostic)
+add_subdirectory(lexer)

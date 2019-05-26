@@ -27,10 +27,16 @@ namespace lingua_test {
    constexpr source_coordinate_range make_coordinates(std::string_view const lexeme) noexcept
    {
       return source_coordinate_range{
-         source_coordinate{source_coordinate::line_type{1}, source_coordinate::column_type{1}},
-         source_coordinate{source_coordinate::line_type{1},
-            source_coordinate::column_type{ranges::distance(lexeme)}}};
+         source_coordinate{
+            source_coordinate::line_type{1},
+            source_coordinate::column_type{1}
+         },
+         source_coordinate{
+            source_coordinate::line_type{1},
+            source_coordinate::column_type{ranges::distance(lexeme)}
+         }
+      };
    }
-}   // namespace lingua_test
+} // namespace lingua_test
 
-#endif   // LINGUA_UNIT_TEST_MAKE_COORDINATES_HPP
+#endif // LINGUA_UNIT_TEST_MAKE_COORDINATES_HPP

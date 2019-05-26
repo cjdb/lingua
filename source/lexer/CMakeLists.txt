@@ -13,4 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-add_subdirectory(lexer)
+lingua_add_library(FILENAME is_escape.cpp
+                   LIBRARY_TYPE OBJECT
+                   LIBRARIES cjdb fmt::fmt range-v3)
