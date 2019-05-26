@@ -18,6 +18,6 @@
 
 namespace lingua {
    enum class diagnostic_level { remark, warning, ill_formed };
-}   // namespace lingua
+} // namespace lingua
 
-#endif   // LINGUA_DIAGNOSTIC_DIAGNOSTIC_LEVEL_HPP
+#endif // LINGUA_DIAGNOSTIC_DIAGNOSTIC_LEVEL_HPP

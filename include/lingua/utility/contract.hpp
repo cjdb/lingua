@@ -26,11 +26,8 @@
 
 #define LINGUA_ASSERT(...) LINGUA_CONTRACT_IMPL("assertion", __VA_ARGS__)
 
-#define LINGUA_ENSURES(LINGUA_RESULT, ...)                  \
-   [&LINGUA_RESULT]() constexpr noexcept {                  \
-      LINGUA_CONTRACT_IMPL("post-condition", __VA_ARGS__);  \
-      return LINGUA_RESULT;                                 \
-   }()                                                      \
+#define LINGUA_ENSURES(LINGUA_RESULT, ...)                              \
+   LINGUA_CONTRACT_IMPL("post-condition", __VA_ARGS__), LINGUA_RESULT   \
 
 
 #define LINGUA_CONTRACT_IMPL(LINGUA_KIND, ...)                             \
@@ -52,6 +49,14 @@
 #define LINGUA_TO_STRING(LINGUA_STRING) LINGUA_TO_STRING_IMPL(LINGUA_STRING)
 #define LINGUA_TO_STRING_IMPL(LINGUA_STRING) #LINGUA_STRING
 
+#define LINGUA_AXIOM(_) true
+
+#ifdef LINGUA_ENABLE_AUDITNG_CONTACTS
+#   define LINGUA_AUDIT(LINGUA_CONTRACT_PARAMETER) LINGUA_CONTRACT_PARAMETER
+#else
+#   define LINGUA_AUDIT(_) true
+#endif // LINGUA_ENABLE_AUDIT
+
 // clang-format on
 
-#endif   // LINGUA_UTILITY_CONTRACT_HPP
+#endif // LINGUA_UTILITY_CONTRACT_HPP

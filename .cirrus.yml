@@ -33,10 +33,6 @@ task:
         matrix:
           - PROFILE: gcc-9
 
-  clang_format_script:
-    - export PATH="/opt/clang-concepts/bin:$PATH"
-    - bash config/scripts/clang-format.sh
-
   conan_config_install_script:
     - export CONAN_USER_HOME="${CIRRUS_WORKING_DIR}"
     - conan config install config/conan

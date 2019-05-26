@@ -25,10 +25,8 @@
 namespace lingua {
    class [[nodiscard]] source_coordinate
    {
-      struct column_tag {
-      };
-      struct line_tag {
-      };
+      struct column_tag {};
+      struct line_tag {};
 
    public:
       using value_type = std::intmax_t;
@@ -44,36 +42,31 @@ namespace lingua {
       ///        value with the line parameter.
       ///
       constexpr explicit source_coordinate(line_type const line, column_type const column) noexcept
-         : line_{line}
-         , column_{column}
-      {
-         LINGUA_EXPECTS(line >= line_type{0});
-         LINGUA_EXPECTS(column >= column_type{0});
-      }
+         : line_{(LINGUA_EXPECTS(line >= line_type{0}), line)}
+         , column_{(LINGUA_EXPECTS(column >= column_type{0}), column)}
+      {}
 
       /// \brief Returns the column value.
       ///
-      constexpr column_type column() const noexcept { return column_; }
+      constexpr column_type column() const noexcept
+      { return column_; }
 
       /// \brief Returns the line value.
       ///
-      constexpr line_type line() const noexcept { return line_; }
+      constexpr line_type line() const noexcept
+      { return line_; }
 
       /// \brief Checks that the column and line values of x are the same as the column and line
       ///        values of y.
       ///
       constexpr friend bool operator==(source_coordinate const x, source_coordinate const y) noexcept
-      {
-         return std::tie(x.column_, x.line_) == std::tie(y.column_, y.line_);
-      }
+      { return std::tie(x.column_, x.line_) == std::tie(y.column_, y.line_); }
 
       /// \brief Checks that the column and line values of x are not the same as the column and line
       ///        values of y.
       ///
       constexpr friend bool operator!=(source_coordinate const x, source_coordinate const y) noexcept
-      {
-         return not(x == y);
-      }
+      { return not(x == y); }
 
       /// \brief Checks that a source_coordinate is strictly less than another source_coordinate.
       /// \param x A source_coordinate to be checked.
@@ -84,9 +77,7 @@ namespace lingua {
       ///  false otherwise
       ///
       constexpr friend bool operator<(source_coordinate const x, source_coordinate const y) noexcept
-      {
-         return x.line() < y.line() or (x.line() == y.line() and x.column() < y.column());
-      }
+      { return x.line() < y.line() or (x.line() == y.line() and x.column() < y.column()); }
 
       /// \brief Checks that a source_coordinate is strictly greater than another source_coordinate.
       /// \param x A source_coordinate to be checked.
@@ -94,9 +85,7 @@ namespace lingua {
       /// \returns `y < x`
       ///
       constexpr friend bool operator>(source_coordinate const x, source_coordinate const y) noexcept
-      {
-         return y < x;
-      }
+      { return y < x; }
 
       /// \brief Checks that a source_coordinate is partially less than another source_coordinate.
       /// \param x A source_coordinate to be checked.
@@ -104,9 +93,7 @@ namespace lingua {
       /// \returns `not (y < x)`
       ///
       constexpr friend bool operator<=(source_coordinate const x, source_coordinate const y) noexcept
-      {
-         return not(y < x);
-      }
+      { return not(y < x); }
 
       /// \brief Checks that a source_coordinate is partially less than another source_coordinate.
       /// \param x A source_coordinate to be checked.
@@ -114,75 +101,64 @@ namespace lingua {
       /// \returns `not (x < y)`
       ///
       constexpr friend bool operator>=(source_coordinate const x, source_coordinate const y) noexcept
-      {
-         return not(x < y);
-      }
+      { return not(x < y); }
 
       /// \brief Moves x by:
       ///       1. adding y.line() to x.line(), and
       ///       2. (a) adding y.column() to x.column() if y.line() == 0, or
       ///          (b) assigning y.column() to x.column() otherwise
       ///
-      constexpr friend source_coordinate operator+(
-         source_coordinate const x, source_coordinate const y) noexcept
+      constexpr friend source_coordinate operator+(source_coordinate const x,
+         source_coordinate const y) noexcept
       {
-         return source_coordinate{line_type{x.line() + y.line()},
-            column_type{line_type{0} == y.line()
-                           ? x.column() + y.column()
-                           : column_type{0} < y.column() ? y.column() : column_type{1}}};
+         return source_coordinate{
+            line_type{x.line() + y.line()},
+            column_type{
+               line_type{0} == y.line() ? x.column() + y.column() : column_type{0} < y.column()
+                                        ? y.column() : column_type{1}
+            }
+         };
       }
 
    private:
       line_type line_{1};
       column_type column_{1};
    };
-}   // namespace lingua
+} // namespace lingua
 
 namespace fmt {
    template<>
    struct formatter<lingua::source_coordinate::line_type> {
       template<class Context>
       constexpr auto parse(Context& c) noexcept
-      {
-         return c.begin();
-      }
+      { return c.begin(); }
 
       template<class Context>
       constexpr auto format(lingua::source_coordinate::line_type const line, Context& c) noexcept
-      {
-         return ::fmt::format_to(c.begin(), "{}", static_cast<std::intmax_t>(line));
-      }
+      { return ::fmt::format_to(c.begin(), "{}", static_cast<std::intmax_t>(line)); }
    };
 
    template<>
    struct formatter<lingua::source_coordinate::column_type> {
       template<class Context>
       constexpr auto parse(Context& c) noexcept
-      {
-         return c.begin();
-      }
+      { return c.begin(); }
 
       template<class Context>
       constexpr auto format(lingua::source_coordinate::column_type const column, Context& c) noexcept
-      {
-         return ::fmt::format_to(c.begin(), "{}", static_cast<std::intmax_t>(column));
-      }
+      { return ::fmt::format_to(c.begin(), "{}", static_cast<std::intmax_t>(column)); }
    };
 
    template<>
    struct formatter<lingua::source_coordinate> {
       template<class Context>
       constexpr auto parse(Context& c) noexcept
-      {
-         return c.begin();
-      }
+      { return c.begin(); }
 
       template<class Context>
       constexpr auto format(lingua::source_coordinate const coordinate, Context& c) noexcept
-      {
-         return ::fmt::format_to(c.begin(), "{}:{}", coordinate.line(), coordinate.column());
-      }
+      { return ::fmt::format_to(c.begin(), "{}:{}", coordinate.line(), coordinate.column()); }
    };
-}   // namespace fmt
+} // namespace fmt
 
-#endif   // LINGUA_SOURCE_COORDINATE_HPP
+#endif // LINGUA_SOURCE_COORDINATE_HPP

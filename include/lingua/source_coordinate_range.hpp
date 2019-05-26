@@ -31,77 +31,70 @@ namespace lingua {
       /// \param end The end of the source_coordinate range.
       /// \note begin and end form the half-open interval [begin, end).
       ///
-      explicit constexpr source_coordinate_range(
-         source_coordinate const begin, source_coordinate const end) noexcept
-         : begin_{begin}
+      explicit constexpr source_coordinate_range(source_coordinate const begin,
+         source_coordinate const end) noexcept
+         : begin_{(LINGUA_EXPECTS(begin <= end), begin)}
          , end_{end}
-      {
-         LINGUA_EXPECTS(begin <= end);
-      }
+      {}
 
       /// \brief Returns the beginning of the source_coordinate range.
       /// \returns the beginning of the source_coordinate range.
       ///
-      constexpr source_coordinate begin() const noexcept { return begin_; }
+      constexpr source_coordinate begin() const noexcept
+      { return begin_; }
 
       /// \brief Returns the end of the source_coordinate range.
       /// \returns the end of the source_coordinate range.
       ///
-      constexpr source_coordinate end() const noexcept { return end_; }
+      constexpr source_coordinate end() const noexcept
+      { return end_; }
 
       /// \brief Checks if the range is empty.
       /// \returns true if `begin() == end()`; false otherwise
       ///
-      constexpr bool empty() const noexcept { return begin() == end(); }
+      constexpr bool empty() const noexcept
+      { return begin() == end(); }
 
       /// \brief Checks that two source_coordinate_ranges are equivalent.
       /// \param x A source_coordinate_range to be checked.
       /// \param y A source_coordinate_range to be checked.
       /// \returns true if `x.begin() == y.begin()` and `x.end() == y.end()`; false otherwise.
       ///
-      friend constexpr bool operator==(
-         source_coordinate_range const& x, source_coordinate_range const& y) noexcept
-      {
-         return std::tie(x.begin_, x.end_) == std::tie(y.begin_, y.end_);
-      }
+      friend constexpr bool operator==(source_coordinate_range const& x, source_coordinate_range const& y) noexcept
+      { return std::tie(x.begin_, x.end_) == std::tie(y.begin_, y.end_); }
 
       /// \brief Checks that two source_coordinate_ranges are not equivalent.
       /// \param x A source_coordinate_range to be checked.
       /// \param y A source_coordinate_range to be checked.
       /// \returns `not (x == y)`
       ///
-      friend constexpr bool operator!=(
-         source_coordinate_range const& x, source_coordinate_range const& y) noexcept
-      {
-         return not(x == y);
-      }
+      friend constexpr bool operator!=(source_coordinate_range const& x, source_coordinate_range const& y) noexcept
+      { return not(x == y); }
 
    protected:
-      constexpr void begin(source_coordinate x) noexcept { begin_ = x; }
+      constexpr void begin(source_coordinate x) noexcept
+      { begin_ = x; }
 
-      constexpr void end(source_coordinate x) noexcept { end_ = x; }
+      constexpr void end(source_coordinate x) noexcept
+      { end_ = x; }
 
    private:
       source_coordinate begin_;
       source_coordinate end_;
    };
-}   // namespace lingua
+} // namespace lingua
 
 namespace fmt {
    template<>
    struct formatter<lingua::source_coordinate_range> {
       template<class Context>
       constexpr auto parse(Context& c) noexcept
-      {
-         return c.begin();
-      }
+      { return c.begin(); }
 
       template<class Context>
       constexpr auto format(lingua::source_coordinate_range const& r, Context& c) noexcept
-      {
-         return ::fmt::format_to(c.begin(), "from {} to {}", r.begin(), r.end());
-      }
+      { return ::fmt::format_to(c.begin(), "from {} to {}", r.begin(), r.end()); }
    };
-}   // namespace fmt
+} // namespace fmt
 
-#endif   // LINGUA_LEXER_SOURCE_COORDINATE_RANGE_HPP
+#endif // LINGUA_LEXER_SOURCE_COORDINATE_RANGE_HPP
