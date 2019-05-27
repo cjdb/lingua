@@ -24,3 +24,14 @@ lingua_add_test(
       fmt::fmt
       range-v3
       source.lexer.is_escape)
+
+lingua_add_test(
+   FILENAME unknown_digit.cpp
+   INCLUDE "${CMAKE_SOURCE_DIR}/test/include"
+   COMPILER_DEFINITIONS
+      DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+   LIBRARIES
+      cjdb
+      doctest::doctest
+      fmt::fmt
+      range-v3)
