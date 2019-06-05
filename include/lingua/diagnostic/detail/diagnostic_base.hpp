@@ -29,7 +29,7 @@ namespace lingua::detail_diagnostic {
       static inline constexpr auto level = level_value;
 
       explicit diagnostic_base(source_coordinate_range const coordinates,
-         std::string help_message) noexcept
+         std::u8string help_message) noexcept
          : coordinates_{coordinates}
          , help_message_{std::move(help_message)}
       {}
@@ -37,7 +37,7 @@ namespace lingua::detail_diagnostic {
       source_coordinate_range coordinates() const noexcept
       { return coordinates_; }
 
-      std::string_view help_message() const noexcept
+      std::u8string_view help_message() const noexcept
       { return help_message_; }
 
    protected:
@@ -45,7 +45,7 @@ namespace lingua::detail_diagnostic {
 
    private:
       source_coordinate_range coordinates_;
-      std::string help_message_;
+      std::u8string help_message_;
    };
 } // namespace lingua::detail_diagnostic
 

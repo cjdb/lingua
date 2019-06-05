@@ -24,7 +24,7 @@
 namespace lingua_test {
    using namespace lingua;
 
-   constexpr source_coordinate_range make_coordinates(std::string_view const lexeme) noexcept
+   constexpr source_coordinate_range make_coordinates(std::u8string_view const lexeme) noexcept
    {
       return source_coordinate_range{
          source_coordinate{

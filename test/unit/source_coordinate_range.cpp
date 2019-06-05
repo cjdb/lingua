@@ -18,14 +18,15 @@
 #include "lingua/source_coordinate.hpp"
 #include <doctest.h>
 
-TEST_CASE("checks that source_coordinate_ranges behave correctly")
-{
+TEST_CASE("checks that source_coordinate_ranges behave correctly") {
    using lingua::source_coordinate;
    using lingua::source_coordinate_range;
 
    constexpr auto first1 = source_coordinate{};
-   constexpr auto last1 =
-      source_coordinate{source_coordinate::line_type{15}, source_coordinate::column_type{7}};
+   constexpr auto last1 = source_coordinate{
+      source_coordinate::line_type{15},
+      source_coordinate::column_type{7}
+   };
    constexpr auto r1 = source_coordinate_range{first1, last1};
 
    CHECK(r1.begin() == first1);
@@ -35,8 +36,10 @@ TEST_CASE("checks that source_coordinate_ranges behave correctly")
    CHECK(not(r1 != r1));
 
    // check an empty range
-   constexpr auto first2 =
-      source_coordinate{source_coordinate::line_type{4}, source_coordinate::column_type{18}};
+   constexpr auto first2 = source_coordinate{
+      source_coordinate::line_type{4},
+      source_coordinate::column_type{18}
+   };
    constexpr auto r2 = source_coordinate_range{first2, first2};
    CHECK(r2.begin() == first2);
    CHECK(r2.end() == first2);

@@ -128,36 +128,37 @@ namespace lingua {
 
 namespace fmt {
    template<>
-   struct formatter<lingua::source_coordinate::line_type> {
-      template<class Context>
-      constexpr auto parse(Context& c) noexcept
+   struct formatter<lingua::source_coordinate::line_type, char8_t> {
+      template<class ParseContext>
+      constexpr auto parse(ParseContext& c) noexcept
       { return c.begin(); }
 
-      template<class Context>
-      constexpr auto format(lingua::source_coordinate::line_type const line, Context& c) noexcept
-      { return ::fmt::format_to(c.begin(), "{}", static_cast<std::intmax_t>(line)); }
+      template<class FormatContext>
+      constexpr auto format(lingua::source_coordinate::line_type const line, FormatContext& c) noexcept
+      { return ::fmt::format_to(c.out(), u8"{}", static_cast<std::intmax_t>(line)); }
    };
 
    template<>
-   struct formatter<lingua::source_coordinate::column_type> {
-      template<class Context>
-      constexpr auto parse(Context& c) noexcept
+   struct formatter<lingua::source_coordinate::column_type, char8_t> {
+      template<class ParseContext>
+      constexpr auto parse(ParseContext& c) noexcept
       { return c.begin(); }
 
-      template<class Context>
-      constexpr auto format(lingua::source_coordinate::column_type const column, Context& c) noexcept
-      { return ::fmt::format_to(c.begin(), "{}", static_cast<std::intmax_t>(column)); }
+      template<class FormatContext>
+      constexpr auto
+      format(lingua::source_coordinate::column_type const column, FormatContext& c) noexcept
+      { return ::fmt::format_to(c.out(), u8"{}", static_cast<std::intmax_t>(column)); }
    };
 
    template<>
-   struct formatter<lingua::source_coordinate> {
-      template<class Context>
-      constexpr auto parse(Context& c) noexcept
+   struct formatter<lingua::source_coordinate, char8_t> {
+      template<class ParseContext>
+      constexpr auto parse(ParseContext& c) noexcept
       { return c.begin(); }
 
-      template<class Context>
-      constexpr auto format(lingua::source_coordinate const coordinate, Context& c) noexcept
-      { return ::fmt::format_to(c.begin(), "{}:{}", coordinate.line(), coordinate.column()); }
+      template<class FormatContext>
+      constexpr auto format(lingua::source_coordinate const coordinate, FormatContext& c) noexcept
+      { return ::fmt::format_to(c.out(), u8"{}:{}", coordinate.line(), coordinate.column()); }
    };
 } // namespace fmt
 

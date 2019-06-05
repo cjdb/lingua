@@ -34,14 +34,14 @@ namespace lingua::detail_unknown_digit {
    class unknown_digit_impl
    : private detail_diagnostic::diagnostic_base<diagnostic_level::ill_formed> {
       using base_t = detail_diagnostic::diagnostic_base<diagnostic_level::ill_formed>;
-      using string_view = std::string_view;
+      using u8string_view = std::u8string_view;
 
    public:
       using base_t::coordinates;
       using base_t::help_message;
       using base_t::level;
 
-      explicit unknown_digit_impl(string_view const literal, string_view::iterator const digit,
+      explicit unknown_digit_impl(u8string_view const literal, u8string_view::iterator const digit,
          source_coordinate_range const coordinates) noexcept
          : base_t{coordinates, generate_message(literal, digit)}
       {
@@ -49,53 +49,53 @@ namespace lingua::detail_unknown_digit {
          LINGUA_EXPECTS(has_invalid_digit(*digit));
       }
    private:
-      static constexpr bool has_correct_prefix(string_view const literal) noexcept
+      static constexpr bool has_correct_prefix(u8string_view const literal) noexcept
       {
          if constexpr (k == kind::binary) {
-            return literal.starts_with("0b");
+            return literal.starts_with(u8"0b");
          }
          else if constexpr (k == kind::octal) {
-            return literal.starts_with("0o");
+            return literal.starts_with(u8"0o");
          }
       }
 
-      static constexpr bool has_invalid_digit(char const digit) noexcept
+      static constexpr bool has_invalid_digit(char8_t const digit) noexcept
       {
          if constexpr (k == kind::binary) {
-            return '1' < digit and digit <= '9';
+            return u8'1' < digit and digit <= u8'9';
          }
          else if constexpr (k == kind::octal) {
-            return digit == '8' or digit == '9';
+            return digit == u8'8' or digit == u8'9';
          }
       }
 
-      static std::string
-      generate_message(string_view const literal, string_view::iterator const digit) noexcept
+      static std::u8string
+      generate_message(u8string_view const literal, u8string_view::iterator const digit) noexcept
       {
          using ranges::distance, ranges::begin;
          using namespace std::string_view_literals;
 
-         constexpr auto message = "unknown digit `{}` in {} literal `{}`\n"
-                                  "                                  {}"sv;
+         constexpr auto message = u8"unknown digit `{}` in {} literal `{}`\n"
+                                  u8"                                  {}"sv;
          auto arrow = make_arrow(literal, digit);
          if constexpr (k == kind::binary) {
-            return fmt::format(message, *digit, "binary", literal, arrow);
+            return fmt::format(message, *digit, u8"binary", literal, arrow);
          }
          else if constexpr (k == kind::octal) {
-            return fmt::format(message, *digit, "octal", literal, arrow);
+            return fmt::format(message, *digit, u8"octal", literal, arrow);
          }
          else {
-            static_assert(always_false<>, "unhandled representation for an unknown digit");
+            static_assert(always_false<>, u8"unhandled representation for an unknown digit");
          }
       }
 
-      static std::string
-      make_arrow(string_view const literal, string_view::iterator const digit) noexcept
+      static std::u8string
+      make_arrow(u8string_view const literal, u8string_view::iterator const digit) noexcept
       {
          using ranges::begin, ranges::distance;
-         using size_type = string_view::size_type;
+         using size_type = u8string_view::size_type;
          auto const arrow_length = static_cast<size_type>(distance(begin(literal), digit));
-         return std::string(arrow_length, ' ') + '^';
+         return std::u8string(arrow_length, u8' ') + u8'^';
       }
    };
 

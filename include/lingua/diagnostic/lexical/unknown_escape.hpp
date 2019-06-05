@@ -41,15 +41,14 @@ namespace lingua {
       class unknown_escape_impl
       : private detail_diagnostic::diagnostic_base<diagnostic_level::ill_formed> {
          using base_t = detail_diagnostic::diagnostic_base<diagnostic_level::ill_formed>;
-         using string_view = std::string_view;
-
+         using u8string_view = std::u8string_view;
       public:
          using base_t::coordinates;
          using base_t::help_message;
          using base_t::level;
 
-         explicit unknown_escape_impl(string_view const lexeme,
-            ranges::subrange<string_view::iterator> const escape,
+         explicit unknown_escape_impl(u8string_view const lexeme,
+            ranges::subrange<u8string_view::iterator> const escape,
             source_coordinate_range const coordinates) noexcept
             : base_t{
                coordinates,
@@ -57,13 +56,13 @@ namespace lingua {
                   (LINGUA_EXPECTS(distance(lexeme) >= 4),
                    lexeme),
                   (LINGUA_EXPECTS(distance(escape) >= 2),
-                   LINGUA_EXPECTS(*begin(escape) == '\\'),
-                   string_view{begin(escape), static_cast<string_view::size_type>(distance(escape))}))
+                   LINGUA_EXPECTS(*begin(escape) == u8'\\'),
+                   u8string_view{begin(escape), static_cast<u8string_view::size_type>(distance(escape))}))
             }
          {
-            auto const data = string_view{
+            auto const data = u8string_view{
                begin(escape),
-               static_cast<string_view::size_type>(distance(escape))
+               static_cast<u8string_view::size_type>(distance(escape))
             };
             if constexpr (kind == unknown_escape_kind::ascii) {
                LINGUA_EXPECTS(not lingua::is_ascii_escape(data));
@@ -77,22 +76,22 @@ namespace lingua {
          }
 
       private:
-         static std::string
-         format_diagnostic(string_view const lexeme, string_view const unrecognised_escape) noexcept
+         static std::u8string format_diagnostic(u8string_view const lexeme,
+            u8string_view const unrecognised_escape) noexcept
          {
             using namespace ranges;
 
-            auto top_line = fmt::format("unrecognised {} escape '{}' in string literal `", kind,
+            auto top_line = fmt::format(u8"unrecognised {} escape '{}' in string literal `", kind,
                unrecognised_escape);
-            auto escape_highlight = '^' + std::string(size(unrecognised_escape) - 1, '~');
+            auto escape_highlight = u8'^' + std::u8string(size(unrecognised_escape) - 1, u8'~');
             // there might be multiple bad escapes in a single string, so we might need some space
             // padding between the first occurrence and where we're actually reporting
             auto const padding_size =
                  static_cast<std::size_t>(distance(begin(lexeme), begin(unrecognised_escape)))
                + size(top_line);
-            auto padding = std::string(padding_size, ' ');
-            auto bottom_line = fmt::format("{}{}", std::move(padding), std::move(escape_highlight));
-            return fmt::format("{}{}`\n{}", std::move(top_line), lexeme, std::move(bottom_line));
+            auto padding = std::u8string(padding_size, u8' ');
+            auto bottom_line = fmt::format(u8"{}{}", std::move(padding), std::move(escape_highlight));
+            return fmt::format(u8"{}{}`\n{}", std::move(top_line), lexeme, std::move(bottom_line));
          }
       };
    } // namespace detail_unknown_escape
@@ -107,26 +106,24 @@ namespace lingua {
 
 namespace fmt {
    template<>
-   struct formatter<lingua::detail_unknown_escape::unknown_escape_kind> {
-      template<class Context>
-      constexpr auto parse(Context& c) noexcept
-      {
-         return c.begin();
-      }
+   struct formatter<lingua::detail_unknown_escape::unknown_escape_kind, char8_t> {
+      template<class ParseContext>
+      constexpr auto parse(ParseContext& c) noexcept
+      { return c.begin(); }
 
-      template<class Context>
+      template<class FormatContext>
       constexpr auto
-      format(lingua::detail_unknown_escape::unknown_escape_kind const kind, Context& c) noexcept
+      format(lingua::detail_unknown_escape::unknown_escape_kind const kind, FormatContext& c) noexcept
       {
          switch (kind) {
          case lingua::detail_unknown_escape::unknown_escape_kind::ascii:
-            return ::fmt::format_to(c.begin(), "ASCII");
+            return ::fmt::format_to(c.out(), u8"ASCII");
          case lingua::detail_unknown_escape::unknown_escape_kind::byte:
-            return ::fmt::format_to(c.begin(), "byte");
+            return ::fmt::format_to(c.out(), u8"byte");
          case lingua::detail_unknown_escape::unknown_escape_kind::unicode:
-            return ::fmt::format_to(c.begin(), "Unicode");
+            return ::fmt::format_to(c.out(), u8"Unicode");
          default:
-            LINGUA_ASSERT(false and "internal compiler error: uknown kind of unkonw_escape_kind");
+            LINGUA_ASSERT(false and u8"internal compiler error: uknown kind of unknown_escape_kind");
             std::abort();
          }
       }

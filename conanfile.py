@@ -47,7 +47,7 @@ class Lingua(ConanFile):
     requires = ("cjdb/0.1@cjdb/beta",
                 "doctest/2.2.0@bincrafters/stable",
                 "expected/master@cjdb/stable",
-                "fmt/5.3.0@bincrafters/stable",
+                "fmt/head@cjdb/stable",
                 "range-v3/v1.0-beta@cjdb/beta")
     exports_sources = (".clang*", "cmake/*", "CMakeLists.txt", "include/*",
                        "source/*", "test/*", "LICENSE.md")

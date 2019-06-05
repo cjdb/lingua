@@ -24,22 +24,21 @@
 #include <range/v3/distance.hpp>
 #include <string_view>
 
-TEST_CASE("checks unknown ASCII escapes")
-{
+TEST_CASE("checks unknown ASCII escapes") {
    using lingua::unknown_escape_ascii;
    using namespace std::string_view_literals;
 
-   constexpr auto ill_formed_string = R"(this\nwas\ra\mista\5e\xef)"sv;
+   constexpr auto ill_formed_string = u8R"(this\nwas\ra\mista\5e\xef)"sv;
    constexpr auto find_unknown_escape = [](auto const escape) constexpr noexcept {
       return [escape](auto const x, auto const y) constexpr noexcept {
-         return x == '\\' and y == escape;
+         return x == u8'\\' and y == escape;
       };
    };
 
    constexpr auto coordinates = lingua_test::make_coordinates(ill_formed_string);
 
    SUBCASE("invalid letter") {
-      auto const first = ranges::adjacent_find(ill_formed_string, find_unknown_escape('m'));
+      auto const first = ranges::adjacent_find(ill_formed_string, find_unknown_escape(u8'm'));
       auto const diagnostic = unknown_escape_ascii{
          ill_formed_string,
          {first, ranges::next(first, 2)},
@@ -50,13 +49,13 @@ TEST_CASE("checks unknown ASCII escapes")
       CHECK(diagnostic.coordinates() == coordinates);
 
       constexpr auto expected_help_message =
-         R"(unrecognised ASCII escape '\m' in string literal `this\nwas\ra\mista\5e\xef`)""\n"
-         "                                                              ^~"sv;
+u8R"(unrecognised ASCII escape '\m' in string literal `this\nwas\ra\mista\5e\xef`
+                                                              ^~)"sv;
       CHECK(diagnostic.help_message() == expected_help_message);
    }
 
    SUBCASE("invalid digit") {
-      auto const first = ranges::adjacent_find(ill_formed_string, find_unknown_escape('5'));
+      auto const first = ranges::adjacent_find(ill_formed_string, find_unknown_escape(u8'5'));
       auto const diagnostic = unknown_escape_ascii{
          ill_formed_string,
          {first, ranges::next(first, 2)},
@@ -67,13 +66,13 @@ TEST_CASE("checks unknown ASCII escapes")
       CHECK(diagnostic.coordinates() == coordinates);
 
       constexpr auto expected_help_message =
-         R"(unrecognised ASCII escape '\5' in string literal `this\nwas\ra\mista\5e\xef`)""\n"
-         "                                                                    ^~"sv;
+u8R"(unrecognised ASCII escape '\5' in string literal `this\nwas\ra\mista\5e\xef`
+                                                                    ^~)"sv;
       CHECK(diagnostic.help_message() == expected_help_message);
    }
 
    SUBCASE("invalid ASCII code") {
-      auto const first = ranges::adjacent_find(ill_formed_string, find_unknown_escape('x'));
+      auto const first = ranges::adjacent_find(ill_formed_string, find_unknown_escape(u8'x'));
       auto const diagnostic = unknown_escape_ascii{
          ill_formed_string,
          {first, ranges::next(first, 4)},
@@ -83,8 +82,8 @@ TEST_CASE("checks unknown ASCII escapes")
       CHECK(diagnostic.coordinates() == coordinates);
 
       constexpr auto expected_help_message =
-         R"(unrecognised ASCII escape '\xef' in string literal `this\nwas\ra\mista\5e\xef`)""\n"
-         "                                                                         ^~~~"sv;
+u8R"(unrecognised ASCII escape '\xef' in string literal `this\nwas\ra\mista\5e\xef`
+                                                                         ^~~~)"sv;
       CHECK(diagnostic.help_message() == expected_help_message);
    }
 }
@@ -93,17 +92,17 @@ TEST_CASE("checks unknown byte escapes") {
    using lingua::unknown_escape_byte;
    using namespace std::string_view_literals;
 
-   constexpr auto ill_formed_string = R"(this\nwas\ra\mista\5e\xef)"sv;
+   constexpr auto ill_formed_string = u8R"(this\nwas\ra\mista\5e\xef)"sv;
    constexpr auto find_unknown_escape = [](auto const escape) constexpr noexcept {
       return [escape](auto const x, auto const y) constexpr noexcept {
-         return x == '\\' and y == escape;
+         return x == u8'\\' and y == escape;
       };
    };
 
    constexpr auto coordinates = lingua_test::make_coordinates(ill_formed_string);
 
    SUBCASE("invalid letter") {
-      auto const first = ranges::adjacent_find(ill_formed_string, find_unknown_escape('m'));
+      auto const first = ranges::adjacent_find(ill_formed_string, find_unknown_escape(u8'm'));
       auto const diagnostic = unknown_escape_byte{
          ill_formed_string,
          {first, ranges::next(first, 2)},
@@ -114,13 +113,13 @@ TEST_CASE("checks unknown byte escapes") {
       CHECK(diagnostic.coordinates() == coordinates);
 
       constexpr auto expected_help_message =
-         R"(unrecognised byte escape '\m' in string literal `this\nwas\ra\mista\5e\xef`)""\n"
-         "                                                             ^~"sv;
+u8R"(unrecognised byte escape '\m' in string literal `this\nwas\ra\mista\5e\xef`
+                                                             ^~)"sv;
       CHECK(diagnostic.help_message() == expected_help_message);
    }
 
    SUBCASE("invalid digit") {
-      auto const first = ranges::adjacent_find(ill_formed_string, find_unknown_escape('5'));
+      auto const first = ranges::adjacent_find(ill_formed_string, find_unknown_escape(u8'5'));
       auto const diagnostic = unknown_escape_byte{
          ill_formed_string,
          {first, ranges::next(first, 2)},
@@ -131,14 +130,14 @@ TEST_CASE("checks unknown byte escapes") {
       CHECK(diagnostic.coordinates() == coordinates);
 
       constexpr auto expected_help_message =
-         R"(unrecognised byte escape '\5' in string literal `this\nwas\ra\mista\5e\xef`)""\n"
-         "                                                                   ^~"sv;
+u8R"(unrecognised byte escape '\5' in string literal `this\nwas\ra\mista\5e\xef`
+                                                                   ^~)"sv;
       CHECK(diagnostic.help_message() == expected_help_message);
    }
 }
 
-void check_diagnostic(std::string_view const ill_formed_string, std::string_view const bad_escape,
-   std::string_view const expected_help_message) noexcept
+void check_diagnostic(std::u8string_view const ill_formed_string, std::u8string_view const bad_escape,
+   std::u8string_view const expected_help_message) noexcept
 {
    auto const coordinates = lingua_test::make_coordinates(ill_formed_string);
    using ranges::begin, ranges::end;
@@ -164,28 +163,28 @@ void check_diagnostic(std::string_view const ill_formed_string, std::string_view
 
 TEST_CASE("checks unknown Unicode escapes") {
    using namespace std::string_view_literals;
-   constexpr auto ill_formed_string = R"(this \u{5tr1ng} \u{69}\u{073} \u{ill}-\u{f0rM3d})"sv;
+   constexpr auto ill_formed_string = u8R"(this \u{5tr1ng} \u{69}\u{073} \u{ill}-\u{f0rM3d})"sv;
 
    SUBCASE("\\u{5tr1ng}") {
-      constexpr auto bad_escape = "\\u{5tr1ng}"sv;
+      constexpr auto bad_escape = u8"\\u{5tr1ng}"sv;
       constexpr auto expected_help_message =
-         R"(unrecognised Unicode escape '\u{5tr1ng}' in string literal `this \u{5tr1ng} \u{69}\u{073} \u{ill}-\u{f0rM3d}`)""\n"
-         "                                                                 ^~~~~~~~~~"sv;
+u8R"(unrecognised Unicode escape '\u{5tr1ng}' in string literal `this \u{5tr1ng} \u{69}\u{073} \u{ill}-\u{f0rM3d}`
+                                                                 ^~~~~~~~~~)"sv;
       check_diagnostic(ill_formed_string, bad_escape, expected_help_message);
    }
 
    SUBCASE("\\u{ill}") {
-      constexpr auto bad_escape = "\\u{ill}"sv;
+      constexpr auto bad_escape = u8"\\u{ill}"sv;
       constexpr auto expected_help_message =
-         R"(unrecognised Unicode escape '\u{ill}' in string literal `this \u{5tr1ng} \u{69}\u{073} \u{ill}-\u{f0rM3d}`)""\n"
-         "                                                                                       ^~~~~~~"sv;
+u8R"(unrecognised Unicode escape '\u{ill}' in string literal `this \u{5tr1ng} \u{69}\u{073} \u{ill}-\u{f0rM3d}`
+                                                                                       ^~~~~~~)"sv;
       check_diagnostic(ill_formed_string, bad_escape, expected_help_message);
    }
    SUBCASE("\\u{f0rM3d}") {
-      constexpr auto bad_escape = "\\u{f0rM3d}"sv;
+      constexpr auto bad_escape = u8"\\u{f0rM3d}"sv;
       constexpr auto expected_help_message =
-         R"(unrecognised Unicode escape '\u{f0rM3d}' in string literal `this \u{5tr1ng} \u{69}\u{073} \u{ill}-\u{f0rM3d}`)""\n"
-         "                                                                                                  ^~~~~~~~~~"sv;
+u8R"(unrecognised Unicode escape '\u{f0rM3d}' in string literal `this \u{5tr1ng} \u{69}\u{073} \u{ill}-\u{f0rM3d}`
+                                                                                                  ^~~~~~~~~~)"sv;
       check_diagnostic(ill_formed_string, bad_escape, expected_help_message);
    }
 }

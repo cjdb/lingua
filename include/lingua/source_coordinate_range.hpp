@@ -86,14 +86,14 @@ namespace lingua {
 
 namespace fmt {
    template<>
-   struct formatter<lingua::source_coordinate_range> {
-      template<class Context>
-      constexpr auto parse(Context& c) noexcept
+   struct formatter<lingua::source_coordinate_range, char8_t> {
+      template<class ParseContext>
+      constexpr auto parse(ParseContext& c) noexcept
       { return c.begin(); }
 
-      template<class Context>
-      constexpr auto format(lingua::source_coordinate_range const& r, Context& c) noexcept
-      { return ::fmt::format_to(c.begin(), "from {} to {}", r.begin(), r.end()); }
+      template<class FormatContext>
+      constexpr auto format(lingua::source_coordinate_range const& r, FormatContext& c) noexcept
+      { return ::fmt::format_to(c.out(), u8"from {} to {}", r.begin(), r.end()); }
    };
 } // namespace fmt
 

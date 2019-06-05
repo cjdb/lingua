@@ -29,38 +29,38 @@
 
 namespace lingua {
    using ranges::distance;
-   using std::string_view;
+   using std::u8string_view;
 
-   bool is_ascii_escape(string_view const escape) noexcept
+   bool is_ascii_escape(u8string_view const escape) noexcept
    {
       LINGUA_EXPECTS(distance(escape) == 2 or distance(escape) == 4);
-      LINGUA_EXPECTS(escape[0] == '\\');
-      LINGUA_EXPECTS(distance(escape) == 4 ? escape[1] == 'x' : true);
+      LINGUA_EXPECTS(escape[0] == u8'\\');
+      LINGUA_EXPECTS(distance(escape) == 4 ? escape[1] == u8'x' : true);
 
       if (distance(escape) == 2) {
-         static auto const valid_escapes = std::unordered_set<char>{'n', 'r', 't', '\\', '0'};
+         static auto const valid_escapes = std::unordered_set{u8'n', u8'r', u8't', u8'\\', u8'0'};
          return valid_escapes.find(escape.back()) != end(valid_escapes);
       }
 
       auto const leading = escape[2];
-      return cjdb::isdigit(leading) and leading <= '7' and cjdb::isxdigit(escape.back());
+      return cjdb::isdigit(leading) and leading <= u8'7' and cjdb::isxdigit(escape.back());
    }
 
-   bool is_byte_escape(string_view const escape) noexcept
+   bool is_byte_escape(u8string_view const escape) noexcept
    {
       LINGUA_EXPECTS(distance(escape) == 2 or distance(escape) == 4);
-      LINGUA_EXPECTS(escape[0] == '\\');
-      LINGUA_EXPECTS(distance(escape) == 4 ? escape[1] == 'x' : true);
+      LINGUA_EXPECTS(escape[0] == u8'\\');
+      LINGUA_EXPECTS(distance(escape) == 4 ? escape[1] == u8'x' : true);
 
       return distance(escape) == 2 ? is_ascii_escape(escape)
                                    : cjdb::isxdigit(escape[2]) and cjdb::isxdigit(escape[3]);
    }
 
    using namespace std::string_view_literals;
-   constexpr auto unicode_escape_prefix = R"(\u{)"sv;
-   constexpr auto unicode_escape_suffix = '}';
+   constexpr auto unicode_escape_prefix = u8R"(\u{)"sv;
+   constexpr auto unicode_escape_suffix = u8'}';
 
-   bool is_unicode_escape(string_view const escape) noexcept
+   bool is_unicode_escape(u8string_view const escape) noexcept
    {
       LINGUA_EXPECTS(distance(escape) > 4);
       LINGUA_EXPECTS(escape.starts_with(unicode_escape_prefix));

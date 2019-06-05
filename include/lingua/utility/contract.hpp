@@ -26,23 +26,23 @@
 
 #define LINGUA_ASSERT(...) LINGUA_CONTRACT_IMPL("assertion", __VA_ARGS__)
 
-#define LINGUA_ENSURES(LINGUA_RESULT, ...)                              \
-   LINGUA_CONTRACT_IMPL("post-condition", __VA_ARGS__), LINGUA_RESULT   \
+#define LINGUA_ENSURES(LINGUA_RESULT, ...)                            \
+   LINGUA_CONTRACT_IMPL("post-condition", __VA_ARGS__), LINGUA_RESULT \
 
 
-#define LINGUA_CONTRACT_IMPL(LINGUA_KIND, ...)                             \
-   [](bool const result) constexpr noexcept {                              \
-      if (not result) {                                                    \
-         _Pragma("GCC diagnostic push")                                    \
-            _Pragma("GCC diagnostic ignored \"-Wterminate\"")              \
-            throw std::logic_error{                                        \
-               fmt::format("{} `{}` failed on line {} in file {}",         \
-                  LINGUA_KIND, #__VA_ARGS__, LINGUA_TO_STRING(__LINE__),   \
-                  LINGUA_TO_STRING(__FILE__))                              \
-            };                                                             \
-         _Pragma("GCC diagnostic pop")                                     \
-      }                                                                    \
-   }(static_cast<bool>(__VA_ARGS__))                                       \
+#define LINGUA_CONTRACT_IMPL(LINGUA_KIND, ...)                           \
+   [](bool const result) constexpr noexcept {                            \
+      if (not result) {                                                  \
+         _Pragma("GCC diagnostic push")                                  \
+            _Pragma("GCC diagnostic ignored \"-Wterminate\"")            \
+            throw std::logic_error{                                      \
+               fmt::format("{} `{}` failed on line {} in file {}",       \
+                  LINGUA_KIND, #__VA_ARGS__, LINGUA_TO_STRING(__LINE__), \
+                  LINGUA_TO_STRING(__FILE__))                            \
+            };                                                           \
+         _Pragma("GCC diagnostic pop")                                   \
+      }                                                                  \
+   }(static_cast<bool>(__VA_ARGS__))                                     \
 
 
 

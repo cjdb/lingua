@@ -243,14 +243,14 @@ TEST_CASE("checks source_coordinate is implemented correctly") {
    SUBCASE("Check ostream operators are correct") {
       SUBCASE("Check line") {
          constexpr auto line = source_coordinate::line_type{32};
-         auto const result = fmt::format("{}", line);
-         CHECK(result == "32");
+         auto const result = fmt::format(u8"{}", line);
+         CHECK(result == u8"32");
       }
 
       SUBCASE("Check column") {
          constexpr auto column = source_coordinate::column_type{28};
-         auto const result = fmt::format("{}", column);
-         CHECK(result == "28");
+         auto const result = fmt::format(u8"{}", column);
+         CHECK(result == u8"28");
       }
 
       SUBCASE("Check source_coordinate") {
@@ -259,8 +259,8 @@ TEST_CASE("checks source_coordinate is implemented correctly") {
             source_coordinate::column_type{4}
          };
 
-         auto const result = fmt::format("{}", cursor);
-         CHECK(result == "10:4");
+         auto const result = fmt::format(u8"{}", cursor);
+         CHECK(result == u8"10:4");
       }
    }
 }

@@ -23,8 +23,8 @@
 #include <string_view>
 
 template<class T>
-void check_unknown_digit(std::string_view const kind, std::string_view const literal,
-   std::string_view::iterator const digit, std::string_view const arrow) noexcept
+void check_unknown_digit(std::u8string_view const kind, std::u8string_view const literal,
+   std::u8string_view::iterator const digit, std::u8string_view const arrow) noexcept
 // [[expects axiom: reachable(literal, digit)]]
 {
    auto const coordinates = lingua_test::make_coordinates(literal);
@@ -33,8 +33,8 @@ void check_unknown_digit(std::string_view const kind, std::string_view const lit
    CHECK(diagnostic.level == lingua::diagnostic_level::ill_formed);
    CHECK(diagnostic.coordinates() == coordinates);
 
-   auto const expected_help_message = fmt::format("unknown digit `{}` in {} literal `{}`\n"
-                                                  "                                  {}",
+   auto const expected_help_message = fmt::format(u8"unknown digit `{}` in {} literal `{}`\n"
+                                                  u8"                                  {}",
       *digit, kind, literal, arrow);
    CHECK(expected_help_message == diagnostic.help_message());
 }
@@ -43,31 +43,31 @@ TEST_CASE("checks the error type for unknown binary digits") {
    using lingua::unknown_digit_binary;
    using namespace std::string_view_literals;
 
-   constexpr auto literal = "0b210_1011_0110_6301_4110_1051_0118"sv;
-   constexpr auto binary = "binary"sv;
-   check_unknown_digit<unknown_digit_binary>(binary, literal, ranges::find(literal, '2'),
-      "  ^");
-   check_unknown_digit<unknown_digit_binary>(binary, literal, ranges::find(literal, '6'),
-      "                ^");
-   check_unknown_digit<unknown_digit_binary>(binary, literal, ranges::find(literal, '3'),
-      "                 ^");
-   check_unknown_digit<unknown_digit_binary>(binary, literal, ranges::find(literal, '4'),
-      "                     ^");
-   check_unknown_digit<unknown_digit_binary>(binary, literal, ranges::find(literal, '5'),
-      "                            ^");
-   check_unknown_digit<unknown_digit_binary>(binary, literal, ranges::find(literal, '8'),
-      "                                  ^");
+   constexpr auto literal = u8"0b210_1011_0110_6301_4110_1051_0118"sv;
+   constexpr auto binary = u8"binary"sv;
+   check_unknown_digit<unknown_digit_binary>(binary, literal, ranges::find(literal, u8'2'),
+      u8"  ^");
+   check_unknown_digit<unknown_digit_binary>(binary, literal, ranges::find(literal, u8'6'),
+      u8"                ^");
+   check_unknown_digit<unknown_digit_binary>(binary, literal, ranges::find(literal, u8'3'),
+      u8"                 ^");
+   check_unknown_digit<unknown_digit_binary>(binary, literal, ranges::find(literal, u8'4'),
+      u8"                     ^");
+   check_unknown_digit<unknown_digit_binary>(binary, literal, ranges::find(literal, u8'5'),
+      u8"                            ^");
+   check_unknown_digit<unknown_digit_binary>(binary, literal, ranges::find(literal, u8'8'),
+      u8"                                  ^");
 }
 
 TEST_CASE("checks the error type for unknown octal digits") {
    using lingua::unknown_digit_octal;
    using namespace std::string_view_literals;
 
-   constexpr auto literal = "0o796_950_448"sv;
-   constexpr auto octal = "octal";
-   auto const nine = ranges::find(literal, '9');
-   check_unknown_digit<unknown_digit_octal>(octal, literal, nine, "   ^");
-   check_unknown_digit<unknown_digit_octal>(octal, literal, ranges::next(nine, 3), "      ^");
-   check_unknown_digit<unknown_digit_octal>(octal, literal, ranges::find(literal, '8'),
-      "            ^");
+   constexpr auto literal = u8"0o796_950_448"sv;
+   constexpr auto octal = u8"octal";
+   auto const nine = ranges::find(literal, u8'9');
+   check_unknown_digit<unknown_digit_octal>(octal, literal, nine, u8"   ^");
+   check_unknown_digit<unknown_digit_octal>(octal, literal, ranges::next(nine, 3), u8"      ^");
+   check_unknown_digit<unknown_digit_octal>(octal, literal, ranges::find(literal, u8'8'),
+      u8"            ^");
 }

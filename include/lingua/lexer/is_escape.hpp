@@ -19,9 +19,9 @@
 #include <string_view>
 
 namespace lingua {
-   bool is_ascii_escape(std::string_view const escape) noexcept;
-   bool is_byte_escape(std::string_view const escape) noexcept;
-   bool is_unicode_escape(std::string_view const escape) noexcept;
+   bool is_ascii_escape(std::u8string_view const escape) noexcept;
+   bool is_byte_escape(std::u8string_view const escape) noexcept;
+   bool is_unicode_escape(std::u8string_view const escape) noexcept;
 } // namespace lingua
 
 #endif // LINGUA_LEXER_IS_ESCAPE_HPP
