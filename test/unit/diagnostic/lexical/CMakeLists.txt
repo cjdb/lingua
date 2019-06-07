@@ -35,3 +35,14 @@ lingua_add_test(
       doctest::doctest
       fmt::fmt
       range-v3)
+
+lingua_add_test(
+   FILENAME unknown_token.cpp
+   INCLUDE "${CMAKE_SOURCE_DIR}/test/include"
+   COMPILER_DEFINITIONS
+      DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+   LIBRARIES
+      cjdb
+      doctest::doctest
+      fmt::fmt
+      range-v3)
