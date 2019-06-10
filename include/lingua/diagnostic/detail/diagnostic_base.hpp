@@ -34,10 +34,10 @@ namespace lingua::detail_diagnostic {
          , help_message_{std::move(help_message)}
       {}
 
-      source_coordinate_range coordinates() const noexcept
+      [[nodiscard]] source_coordinate_range coordinates() const noexcept
       { return coordinates_; }
 
-      std::u8string_view help_message() const noexcept
+      [[nodiscard]] std::u8string_view help_message() const noexcept
       { return help_message_; }
 
    protected:

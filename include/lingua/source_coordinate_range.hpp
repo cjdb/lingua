@@ -40,19 +40,19 @@ namespace lingua {
       /// \brief Returns the beginning of the source_coordinate range.
       /// \returns the beginning of the source_coordinate range.
       ///
-      constexpr source_coordinate begin() const noexcept
+      [[nodiscard]] constexpr source_coordinate begin() const noexcept
       { return begin_; }
 
       /// \brief Returns the end of the source_coordinate range.
       /// \returns the end of the source_coordinate range.
       ///
-      constexpr source_coordinate end() const noexcept
+      [[nodiscard]] constexpr source_coordinate end() const noexcept
       { return end_; }
 
       /// \brief Checks if the range is empty.
       /// \returns true if `begin() == end()`; false otherwise
       ///
-      constexpr bool empty() const noexcept
+      [[nodiscard]] constexpr bool empty() const noexcept
       { return begin() == end(); }
 
       /// \brief Checks that two source_coordinate_ranges are equivalent.
@@ -60,7 +60,8 @@ namespace lingua {
       /// \param y A source_coordinate_range to be checked.
       /// \returns true if `x.begin() == y.begin()` and `x.end() == y.end()`; false otherwise.
       ///
-      friend constexpr bool operator==(source_coordinate_range const& x, source_coordinate_range const& y) noexcept
+      [[nodiscard]] constexpr friend bool
+      operator==(source_coordinate_range const& x, source_coordinate_range const& y) noexcept
       { return std::tie(x.begin_, x.end_) == std::tie(y.begin_, y.end_); }
 
       /// \brief Checks that two source_coordinate_ranges are not equivalent.
@@ -68,14 +69,15 @@ namespace lingua {
       /// \param y A source_coordinate_range to be checked.
       /// \returns `not (x == y)`
       ///
-      friend constexpr bool operator!=(source_coordinate_range const& x, source_coordinate_range const& y) noexcept
+      [[nodiscard]] constexpr friend bool
+      operator!=(source_coordinate_range const& x, source_coordinate_range const& y) noexcept
       { return not(x == y); }
 
    protected:
-      constexpr void begin(source_coordinate x) noexcept
+      [[nodiscard]] constexpr void begin(source_coordinate x) noexcept
       { begin_ = x; }
 
-      constexpr void end(source_coordinate x) noexcept
+      [[nodiscard]] constexpr void end(source_coordinate x) noexcept
       { end_ = x; }
 
    private:

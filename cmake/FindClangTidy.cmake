@@ -27,7 +27,7 @@ endif()
 
 if(EXISTS "${${PROJECT_NAME}_CLANG_TIDY_PATH}")
    set(ClangTidy_FOUND On)
-   set(CMAKE_CXX_CLANG_TIDY "${${PROJECT_NAME}_CLANG_TIDY_PATH}" -p=${CMAKE_BINARY_DIR})
+   set(CMAKE_CXX_CLANG_TIDY "${${PROJECT_NAME}_CLANG_TIDY_PATH}" "-p=${CMAKE_BINARY_DIR}")
    message(STATUS "Found ${${PROJECT_NAME}_CLANG_TIDY_PATH}")
 else()
    set(ClangTidy_FOUND Off)

@@ -48,24 +48,26 @@ namespace lingua {
 
       /// \brief Returns the column value.
       ///
-      constexpr column_type column() const noexcept
+      [[nodiscard]] constexpr column_type column() const noexcept
       { return column_; }
 
       /// \brief Returns the line value.
       ///
-      constexpr line_type line() const noexcept
+      [[nodiscard]] constexpr line_type line() const noexcept
       { return line_; }
 
       /// \brief Checks that the column and line values of x are the same as the column and line
       ///        values of y.
       ///
-      constexpr friend bool operator==(source_coordinate const x, source_coordinate const y) noexcept
+      [[nodiscard]] constexpr friend bool
+      operator==(source_coordinate const x, source_coordinate const y) noexcept
       { return std::tie(x.column_, x.line_) == std::tie(y.column_, y.line_); }
 
       /// \brief Checks that the column and line values of x are not the same as the column and line
       ///        values of y.
       ///
-      constexpr friend bool operator!=(source_coordinate const x, source_coordinate const y) noexcept
+      [[nodiscard]] constexpr friend bool
+      operator!=(source_coordinate const x, source_coordinate const y) noexcept
       { return not(x == y); }
 
       /// \brief Checks that a source_coordinate is strictly less than another source_coordinate.
@@ -76,7 +78,8 @@ namespace lingua {
       ///     * `x.line() == y.line()` and `x.column()` is less than `y.column()`
       ///  false otherwise
       ///
-      constexpr friend bool operator<(source_coordinate const x, source_coordinate const y) noexcept
+      [[nodiscard]] constexpr friend bool
+      operator<(source_coordinate const x, source_coordinate const y) noexcept
       { return x.line() < y.line() or (x.line() == y.line() and x.column() < y.column()); }
 
       /// \brief Checks that a source_coordinate is strictly greater than another source_coordinate.
@@ -84,7 +87,8 @@ namespace lingua {
       /// \param y A source_coordinate to be checked.
       /// \returns `y < x`
       ///
-      constexpr friend bool operator>(source_coordinate const x, source_coordinate const y) noexcept
+      [[nodiscard]] constexpr friend bool
+      operator>(source_coordinate const x, source_coordinate const y) noexcept
       { return y < x; }
 
       /// \brief Checks that a source_coordinate is partially less than another source_coordinate.
@@ -92,7 +96,8 @@ namespace lingua {
       /// \param y A source_coordinate to be checked.
       /// \returns `not (y < x)`
       ///
-      constexpr friend bool operator<=(source_coordinate const x, source_coordinate const y) noexcept
+      [[nodiscard]] constexpr friend bool
+      operator<=(source_coordinate const x, source_coordinate const y) noexcept
       { return not(y < x); }
 
       /// \brief Checks that a source_coordinate is partially less than another source_coordinate.
@@ -100,7 +105,8 @@ namespace lingua {
       /// \param y A source_coordinate to be checked.
       /// \returns `not (x < y)`
       ///
-      constexpr friend bool operator>=(source_coordinate const x, source_coordinate const y) noexcept
+      [[nodiscard]] constexpr friend bool
+      operator>=(source_coordinate const x, source_coordinate const y) noexcept
       { return not(x < y); }
 
       /// \brief Moves x by:
@@ -108,7 +114,7 @@ namespace lingua {
       ///       2. (a) adding y.column() to x.column() if y.line() == 0, or
       ///          (b) assigning y.column() to x.column() otherwise
       ///
-      constexpr friend source_coordinate operator+(source_coordinate const x,
+      [[nodiscard]] constexpr friend source_coordinate operator+(source_coordinate const x,
          source_coordinate const y) noexcept
       {
          return source_coordinate{

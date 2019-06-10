@@ -31,7 +31,7 @@ namespace lingua {
    using ranges::distance;
    using std::u8string_view;
 
-   bool is_ascii_escape(u8string_view const escape) noexcept
+   [[nodiscard]] bool is_ascii_escape(u8string_view const escape) noexcept
    {
       LINGUA_EXPECTS(distance(escape) == 2 or distance(escape) == 4);
       LINGUA_EXPECTS(escape[0] == u8'\\');
@@ -43,26 +43,27 @@ namespace lingua {
       }
 
       auto const leading = escape[2];
-      return cjdb::isdigit(leading) and leading <= u8'7' and cjdb::isxdigit(escape.back());
+      return isdigit(leading) and leading <= u8'7' and isxdigit(escape.back());
    }
 
-   bool is_byte_escape(u8string_view const escape) noexcept
+   [[nodiscard]] bool is_byte_escape(u8string_view const escape) noexcept
    {
       LINGUA_EXPECTS(distance(escape) == 2 or distance(escape) == 4);
       LINGUA_EXPECTS(escape[0] == u8'\\');
       LINGUA_EXPECTS(distance(escape) == 4 ? escape[1] == u8'x' : true);
 
       return distance(escape) == 2 ? is_ascii_escape(escape)
-                                   : cjdb::isxdigit(escape[2]) and cjdb::isxdigit(escape[3]);
+                                   : isxdigit(escape[2]) and isxdigit(escape[3]);
    }
 
    using namespace std::string_view_literals;
    constexpr auto unicode_escape_prefix = u8R"(\u{)"sv;
    constexpr auto unicode_escape_suffix = u8'}';
+   constexpr auto unicode_escape_distance_lower_bound = 5;
 
-   bool is_unicode_escape(u8string_view const escape) noexcept
+   [[nodiscard]] bool is_unicode_escape(u8string_view const escape) noexcept
    {
-      LINGUA_EXPECTS(distance(escape) > 4);
+      LINGUA_EXPECTS(distance(escape) >= unicode_escape_distance_lower_bound);
       LINGUA_EXPECTS(escape.starts_with(unicode_escape_prefix));
       LINGUA_EXPECTS(escape.ends_with(unicode_escape_suffix));
       LINGUA_EXPECTS(ranges::count(escape, unicode_escape_suffix) == 1);
@@ -73,6 +74,8 @@ namespace lingua {
 
       auto not_suffix = [](auto const c) noexcept { return c != unicode_escape_suffix; };
       auto unicode = escape | view::drop(3) | view::take_while(not_suffix);
-      return distance(unicode) <= 6 and all_of(unicode, cjdb::isxdigit);
+
+      constexpr auto unicode_distance_upper_bound = 7;
+      return distance(unicode) < unicode_distance_upper_bound and all_of(unicode, isxdigit);
    }
 } // namespace lingua
