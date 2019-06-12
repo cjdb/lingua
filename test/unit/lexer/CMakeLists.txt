@@ -23,3 +23,12 @@ lingua_add_test(
       fmt::fmt
       range-v3
       source.lexer.is_escape)
+lingua_add_test(
+   FILENAME string_literal_terminated.cpp
+   COMPILER_DEFINITIONS
+      DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+   LIBRARIES
+      doctest::doctest
+      fmt::fmt
+      range-v3
+      source.lexer.string_literal_terminated)

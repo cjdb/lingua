@@ -16,3 +16,7 @@
 lingua_add_library(FILENAME is_escape.cpp
                    LIBRARY_TYPE OBJECT
                    LIBRARIES cjdb fmt::fmt range-v3)
+
+lingua_add_library(FILENAME string_literal_terminated.cpp
+                   LIBRARY_TYPE OBJECT
+                   LIBRARIES fmt::fmt range-v3)
