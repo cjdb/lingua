@@ -119,39 +119,36 @@ private:
    }
 };
 
-template<int N>
-void exhaustive_check_is_unicode_escape() noexcept
-{
-   using lingua::is_unicode_escape;
-   namespace view = ranges::view;
-
-   auto all_hex = [](std::u8string_view const x) noexcept {
-      return ranges::all_of(x, cjdb::isxdigit);
-   };
-   auto format = view::transform([](auto&& x) noexcept {
-      return fmt::format(u8R"(\u{{{}}})", std::forward<decltype(x)>(x));
-   });
-   auto no_close_braces = view::filter([](std::u8string_view const x) noexcept {
-      return x.find(u8'}') == std::u8string_view::npos;
-   });
-
-   auto strings = ::generate_strings<N>{}() | no_close_braces;
-   SUBCASE("valid escapes") {
-      auto expected_escapes = strings | view::filter(all_hex) | format;
-      CHECK(ranges::all_of(expected_escapes, is_unicode_escape));
-   }
-   SUBCASE("invalid escapes") {
-      auto expected_non_escapes = strings | view::filter(std::not_fn(all_hex)) | format;
-      CHECK(ranges::none_of(expected_non_escapes, is_unicode_escape));
-   }
+#define EXHAUSTIVE_CHECK_IS_UNICODE_ESCAPE(N) {                                           \
+   using lingua::is_unicode_escape;                                                       \
+   namespace view = ranges::view;                                                         \
+                                                                                          \
+   auto all_hex = [](std::u8string_view const x) noexcept {                               \
+      return ranges::all_of(x, cjdb::isxdigit);                                           \
+   };                                                                                     \
+   auto format = view::transform([](auto&& x) noexcept {                                  \
+      return fmt::format(u8R"(\u{{{}}})", std::forward<decltype(x)>(x));                  \
+   });                                                                                    \
+   auto no_close_braces = view::filter([](std::u8string_view const x) noexcept {          \
+      return x.find(u8'}') == std::u8string_view::npos;                                   \
+   });                                                                                    \
+                                                                                          \
+   auto strings = ::generate_strings<N>{}() | no_close_braces;                            \
+   SUBCASE("valid escapes") {                                                             \
+      auto expected_escapes = strings | view::filter(all_hex) | format;                   \
+      CHECK(ranges::all_of(expected_escapes, is_unicode_escape));                         \
+   }                                                                                      \
+   SUBCASE("invalid escapes") {                                                           \
+      auto expected_non_escapes = strings | view::filter(std::not_fn(all_hex)) | format;  \
+      CHECK(ranges::none_of(expected_non_escapes, is_unicode_escape));                    \
+   }                                                                                      \
 }
 
 
-TEST_CASE("checks Unicode escapes are valid")
-{
-   exhaustive_check_is_unicode_escape<1>();
-   exhaustive_check_is_unicode_escape<2>();
-   exhaustive_check_is_unicode_escape<3>();
+TEST_CASE("checks Unicode escapes are valid") {
+   EXHAUSTIVE_CHECK_IS_UNICODE_ESCAPE(1);
+   EXHAUSTIVE_CHECK_IS_UNICODE_ESCAPE(2);
+   EXHAUSTIVE_CHECK_IS_UNICODE_ESCAPE(3);
 
    SUBCASE("valid escapes") {
       using lingua::is_unicode_escape;
