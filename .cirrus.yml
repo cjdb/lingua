@@ -15,7 +15,7 @@
 #
 task:
   container:
-    image: cjdb/clang-concepts:disco
+    image: cjdb/lingua:latest
     cpu: 8
     memory: 8
   env:

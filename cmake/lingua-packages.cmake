@@ -15,8 +15,10 @@
 #
 
 # System packages
-find_package(Clang REQUIRED)
-find_package(ClangTidy REQUIRED)
+if (LINGUA_ENABLE_CLANG_TIDY)
+   find_package(Clang REQUIRED)
+   find_package(ClangTidy REQUIRED)
+endif()
 find_package(CodeCoverage REQUIRED)
 include(lingua-sanitizers)
 
